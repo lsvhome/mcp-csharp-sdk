@@ -57,6 +57,7 @@
     <File Path="Directory.Build.props" />
     <File Path="Directory.Packages.props" />
     <File Path="global.json" />
+    <File Path="Dockerfile"/>
     <File Path="LICENSE" />
     <File Path="logo.png" />
     <File Path="Makefile" />
