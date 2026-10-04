@@ -37,6 +37,7 @@ builder.Services.AddMcpServer()
 
     // .WithTools<ToolConsole>()
     .WithTools<EchoTool>()
+    .WithTools<ExceptionTool>()
     // .WithTools<SampleLlmTool>()
     // .WithTools<WeatherTools>()
     // .WithResources<SimpleResourceType>()
