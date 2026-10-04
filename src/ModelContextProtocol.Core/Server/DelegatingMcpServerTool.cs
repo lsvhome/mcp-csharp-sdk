@@ -1,6 +1,4 @@
 ﻿using ModelContextProtocol.Protocol;
-using System;
-using System.Text.Json;
 
 namespace ModelContextProtocol.Server;
 
@@ -29,113 +27,11 @@ public abstract class DelegatingMcpServerTool : McpServerTool
     public override IReadOnlyList<object> Metadata => _innerTool.Metadata;
 
     /// <inheritdoc />
-    public override async ValueTask<CallToolResult> InvokeAsync(
+    public override ValueTask<CallToolResult> InvokeAsync(
         RequestContext<CallToolRequestParams> request, 
-        CancellationToken cancellationToken = default)
-        {
-            try
-            {
-                var ret =  await _innerTool.InvokeAsync(request, cancellationToken).ConfigureAwait(false);
-                return ret;
-            }
-            catch(Exception ex)
-            {
-                //throw new McpException("Error while calling tool", ex);
-                var ret = new CallToolResult
-                    {
-                        IsError = false,
-                        Content = [new TextContentBlock
-                        {
-                            Text = 
-                                $"An error occurred invoking '{request.Params?.Name}': {ex.Message}"
-                        }],
-
-                //         //  Content = new List<ContentBlock>
-                //         //  {
-                //         //      new ContentBlock{
-                //         //          Annotations = new Annotations{ },
-                //         //          Meta = 
-                             
-                //         //       }
-                //         //  }
-                //         //StructuredContent = ex.to
-
-                     };
-                return ret;
-            }
-        }
+        CancellationToken cancellationToken = default) =>
+        _innerTool.InvokeAsync(request, cancellationToken);
 
     /// <inheritdoc />
     public override string ToString() => _innerTool.ToString();
 }
-
-
-
-// #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
-// public static class ExceptionExtensions
-// #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
-// {
-//     public static JsonElement ToJsonElement(this Exception exception)
-//     {
-//         // Створюємо анонімну структуру з базовими даними помилки
-//         var errorDetails = new ErrorDetails
-//         {
-//             TypeName = exception.GetType()?.FullName ?? string.Empty,
-//             Message = exception.Message,
-//             StackTrace = exception.StackTrace ?? string.Empty,
-//             InnerException = exception.InnerException?.Message ?? string.Empty // або рекурсивно
-//         };
-
-//         var options = new JsonSerializerOptions();
-//         options.Converters.Add(new ExceptionConverter());
-
-//         //Exception ex = new InvalidOperationException("Щось пішло не так", new ArgumentException("Wrong argument"));
-
-//         // Серіалізуємо за допомогою нашого конвертера
-//         string json = JsonSerializer.Serialize(exception, options);
-
-
-//         // Серіалізуємо у рядок і парсимо як JsonElement
-//         string jsonString = JsonSerializer.Serialize<ErrorDetails>(errorDetails, 
-//             new System.Text.Json.Serialization.Metadata.JsonTypeInfo<ErrorDetails>());
-//         using JsonDocument document = JsonDocument.Parse(jsonString);
-        
-//         // Повертаємо Clone(), оскільки оригінальний document буде утилізовано
-//         return document.RootElement.Clone();
-//     }
-// }
-
-// [Serializable]
-// public class ErrorDetails
-// {
-//     public string TypeName { get;set;}
-//     public string Message { get;set;}
-
-//     public string StackTrace { get;set;}
-
-//     public string InnerException { get;set;}
-// }
-
-// public class ExceptionConverter : JsonConverter<Exception>
-// {
-//     public override Exception Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-//     {
-//         throw new NotImplementedException("Десеріалізація виключень не підтримується.");
-//     }
-
-//     public override void Write(Utf8JsonWriter writer, Exception value, JsonSerializerOptions options)
-//     {
-//         writer.WriteStartObject();
-//         writer.WriteString("Type", value.GetType().FullName);
-//         writer.WriteString("Message", value.Message);
-//         writer.WriteString("StackTrace", value.StackTrace);
-        
-//         if (value.InnerException != null)
-//         {
-//             writer.WritePropertyName("InnerException");
-//             Write(writer, value.InnerException, options); // Рекурсивний запис
-//         }
-//         writer.WriteEndObject();
-//     }
-// }
-// #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
