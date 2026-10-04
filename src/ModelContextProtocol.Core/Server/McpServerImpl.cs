@@ -1628,9 +1628,7 @@ internal sealed partial class McpServerImpl : McpServer
             IsError = true,
             Content = [new TextContentBlock
             {
-                Text = exception is McpException ?
-                    $"An error occurred invoking '{request.Params?.Name}': {exception.Message}" :
-                    $"An error occurred invoking '{request.Params?.Name}'.",
+                Text = $"An error occurred invoking '{request.Params?.Name}' with parameters [{string.Join(", ", request.Params?.Arguments?.Keys.ToArray() ?? Array.Empty<object>())}]. Error: {exception.Message}",
             }],
         };
 
