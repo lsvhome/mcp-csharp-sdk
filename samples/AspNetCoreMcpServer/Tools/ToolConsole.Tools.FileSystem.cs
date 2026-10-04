@@ -12,7 +12,8 @@ namespace AspNetCoreMcpServer.Tools;
 /// <summary>
 /// Console that demonstrates tool usage with the Ollama API.
 /// </summary>
-public partial class ToolConsole
+[McpServerToolType]
+public sealed class ToolConsole
 {
 	public static object commandLock = new object();
 	/// <summary>
@@ -260,14 +261,19 @@ public partial class ToolConsole
 
 		try
 		{
+
+#pragma	warning disable CS8600
 			// 2. Run the process and read the output
 			using (Process process = Process.Start(startInfo))
 			{
+#pragma	warning restore CS8600
 				StringBuilder sb = new StringBuilder();
 
 				// Read the output and errors
 				sb.AppendLine("Output:");
+#pragma	warning disable CS8602
 				sb.AppendLine(process.StandardOutput.ReadToEnd());
+#pragma	warning restore CS8602
 
 				string errors = process.StandardError.ReadToEnd();
 				if (!string.IsNullOrEmpty(errors))
@@ -343,11 +349,14 @@ public partial class ToolConsole
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
 				using (Process process = Process.Start(startInfo))
 				{
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
 					StringBuilder sb = new StringBuilder();
 
 					// Read the output and errors
 					sb.AppendLine("Output:");
+#pragma	warning disable CS8602
 					sb.AppendLine(process.StandardOutput.ReadToEnd());
+#pragma warning restore CS8602 // Converting null literal or possible null value to non-nullable type.
 
 					string errors = process.StandardError.ReadToEnd();
 					if (!string.IsNullOrEmpty(errors))
@@ -370,7 +379,6 @@ public partial class ToolConsole
 					Console.WriteLine(sb.ToString());
 					return sb.ToString();
 				}
-#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
 			}
 			catch (Exception ex)
 			{

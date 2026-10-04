@@ -21,9 +21,9 @@
     <PackageValidationBaselineVersion>1.4.1</PackageValidationBaselineVersion>
   </PropertyGroup>
 
-  <ItemGroup>
+  <!-- <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All" />
-  </ItemGroup>
+  </ItemGroup> -->
 
   <ItemGroup>
     <Compile Include="..\Common\Polyfills\**\*.cs" />

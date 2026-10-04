@@ -6,7 +6,8 @@ using AspNetCoreMcpServer.Resources;
 using System.Net.Http.Headers;
 
 var builder = WebApplication.CreateBuilder(args);
-var allowedOrigins = builder.Configuration.GetSection("Mcp:AllowedOrigins").Get<string[]>() ?? ["http://localhost:5173"];
+//var allowedOrigins = builder.Configuration.GetSection("Mcp:AllowedOrigins").Get<string[]>() ?? ["http://localhost:5173"];
+string[] allowedOrigins = ["*"];
 
 // Only enable CORS if you intentionally want browser-based cross-origin access to this server.
 // Keep the allowlist narrowly scoped to known origins. Broad CORS settings weaken security.
@@ -29,10 +30,16 @@ builder.Services.AddCors(options =>
 // See https://csharp.sdk.modelcontextprotocol.io/concepts/sessions/sessions.html for details.
 builder.Services.AddMcpServer()
     .WithHttpTransport(o => o.Stateless = false)
-    .WithTools<EchoTool>()
-    .WithTools<SampleLlmTool>()
-    .WithTools<WeatherTools>()
-    .WithResources<SimpleResourceType>();
+    .WithTools<ToolConsole>();
+
+
+
+    // .WithTools<ToolConsole>()
+    // .WithTools<EchoTool>()
+    // .WithTools<SampleLlmTool>()
+    // .WithTools<WeatherTools>()
+    // .WithResources<SimpleResourceType>()
+    //;
 
 builder.Services.AddOpenTelemetry()
     .WithTracing(b => b.AddSource("*")
@@ -45,11 +52,11 @@ builder.Services.AddOpenTelemetry()
     .UseOtlpExporter();
 
 // Configure HttpClientFactory for weather.gov API
-builder.Services.AddHttpClient("WeatherApi", client =>
-{
-    client.BaseAddress = new Uri("https://api.weather.gov");
-    client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("weather-tool", "1.0"));
-});
+// builder.Services.AddHttpClient("WeatherApi", client =>
+// {
+//     client.BaseAddress = new Uri("https://api.weather.gov");
+//     client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("weather-tool", "1.0"));
+// });
 
 var app = builder.Build();
 

@@ -57,9 +57,9 @@
   </ItemGroup>
 
   <!-- Build Infra & Packaging dependencies-->
-  <ItemGroup>
+  <!-- <ItemGroup>
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="10.0.401" />
-  </ItemGroup>
+  </ItemGroup> -->
 
   <!-- Testing dependencies -->
   <ItemGroup>

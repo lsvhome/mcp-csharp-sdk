@@ -5,8 +5,8 @@
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG BUILD_CONFIGURATION=Release
 
-RUN apt update \
-    && apt install -y build-essential clang zlib1g-dev
+# RUN apt update \
+#     && apt install -y build-essential clang zlib1g-dev
 
 #WORKDIR /src
 #COPY ["samples/AspNetCoreMcpServer/AspNetCoreMcpServer.csproj", "samples/AspNetCoreMcpServer/"]
@@ -34,10 +34,11 @@ WORKDIR /
 #WORKDIR /app
 COPY --from=build /app/publish /app/
 
-EXPOSE 8080
-EXPOSE 8081
+EXPOSE 3001
+#EXPOSE 8080
+#EXPOSE 8081
 
 RUN ls /app -1al
 
 #ENTRYPOINT ["dotnet", "/app/AspNetCoreMcpServer.dll"]
-ENTRYPOINT ["/app/AspNetCoreMcpServer"]
+ENTRYPOINT ["/app/AspNetCoreMcpServer", "--urls", "http://*:3001"]
