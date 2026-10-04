@@ -30,16 +30,17 @@ builder.Services.AddCors(options =>
 // See https://csharp.sdk.modelcontextprotocol.io/concepts/sessions/sessions.html for details.
 builder.Services.AddMcpServer()
     .WithHttpTransport(o => o.Stateless = false)
-    .WithTools<ToolConsole>();
+    //.WithHttpTransport(o => o.Stateless = true)
+    .WithTools<ToolConsole>()
 
 
 
     // .WithTools<ToolConsole>()
-    // .WithTools<EchoTool>()
+    .WithTools<EchoTool>()
     // .WithTools<SampleLlmTool>()
     // .WithTools<WeatherTools>()
     // .WithResources<SimpleResourceType>()
-    //;
+    ;
 
 builder.Services.AddOpenTelemetry()
     .WithTracing(b => b.AddSource("*")

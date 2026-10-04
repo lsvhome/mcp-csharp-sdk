@@ -87,3 +87,8 @@ docs/api
 # Rider
 .idea/
 .idea_modules/
+
+
+
+/samples/AspNetCoreMcpServer-publish
+
