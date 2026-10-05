@@ -1,47 +1,52 @@
-﻿#FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
-#USER $APP_UID
-#WORKDIR /app
+﻿FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 
-FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG BUILD_CONFIGURATION=Release
 
+# Mandatory
 RUN apt update \
     && apt install -y \
-    #build-essential \
     clang \
-    zlib1g-dev
+    zlib1g-dev \
+    tree
 
-#WORKDIR /src
-#COPY ["samples/AspNetCoreMcpServer/AspNetCoreMcpServer.csproj", "samples/AspNetCoreMcpServer/"]
-#COPY ["src/ModelContextProtocol.AspNetCore/ModelContextProtocol.AspNetCore.csproj", "src/ModelContextProtocol.AspNetCore/"]
-#COPY ["src/ModelContextProtocol/ModelContextProtocol.csproj", "src/ModelContextProtocol/"]
-#COPY ["src/ModelContextProtocol.Core/ModelContextProtocol.Core.csproj", "src/ModelContextProtocol.Core/"]
-#COPY ["src/ModelContextProtocol.Analyzers/ModelContextProtocol.Analyzers.csproj", "src/ModelContextProtocol.Analyzers/"]
+# Optional
+RUN apt install -y \
+    ca-certificates \
+    gnupg \
+    wget \
+    curl \
+    unzip \
+    git \
+    less \
+    build-essential \
+    zstd \
+    markdown \
+    mc \
+    python3-pip \
+    golang-go \
+    dotnet-sdk-10.0 \
+    ocl-icd-libopencl1 \
+    libhwloc15 \
+    screen \
+    openssh-server
+
+
 COPY . .
+
 RUN dotnet restore 
-#"samples/AspNetCoreMcpServer/AspNetCoreMcpServer.csproj"
 
-#RUN dotnet build -c $BUILD_CONFIGURATION "samples/AspNetCoreMcpServer/AspNetCoreMcpServer.csproj"
+RUN dotnet test -c $BUILD_CONFIGURATION -o /app/tests
 
-#WORKDIR "/samples/AspNetCoreMcpServer"
-
-#RUN dotnet test -c $BUILD_CONFIGURATION -o /app/build
-RUN pwd
-RUN ls . -1al
-RUN dotnet publish -f net10.0 -o /app/publish /p:UseAppHost=false /samples/AspNetCoreMcpServer/AspNetCoreMcpServer.csproj
-#-c $BUILD_CONFIGURATION 
+RUN dotnet publish -f net10.0 -o /app/publish /p:UseAppHost=false /samples/AspNetCoreMcpServer/AspNetCoreMcpServer.csproj -c $BUILD_CONFIGURATION 
 
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final
-WORKDIR /
-#RUN mkdir /app
-#WORKDIR /app
+
+RUN mkdir /workspace
+
+WORKDIR /workspace
+
 COPY --from=build /app/publish /app/
 
 EXPOSE 3001
-#EXPOSE 8080
-#EXPOSE 8081
 
-RUN ls /app -1al
-
-#ENTRYPOINT ["dotnet", "/app/AspNetCoreMcpServer.dll"]
 ENTRYPOINT ["/app/AspNetCoreMcpServer", "--urls", "http://*:3001"]
