@@ -92,5 +92,7 @@ docs/api
 
 /samples/AspNetCoreMcpServer-publish
 
-.git
-
+/.git
+/authorized_keys
+/Exception_*.txt
+/ollamaapi.sh
