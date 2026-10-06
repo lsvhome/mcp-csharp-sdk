@@ -45,6 +45,13 @@ RUN apt update \
     openssh-server \
     && rm -rf /var/lib/apt/lists/*
 
+
+
+RUN dotnet tool install --global dotnet-skills
+RUN dotnet tool install --global dotnet-agents
+RUN dotnet tool install --global agents
+RUN dotnet tool restore    
+
 RUN curl -fsSL https://pkg.cloudflare.com/cloudflare-main.gpg | tee /usr/share/keyrings/cloudflare-main.gpg >/dev/null
 
 RUN echo 'deb [signed-by=/usr/share/keyrings/cloudflare-main.gpg] https://pkg.cloudflare.com/cloudflared any main' | tee /etc/apt/sources.list.d/cloudflared.list
