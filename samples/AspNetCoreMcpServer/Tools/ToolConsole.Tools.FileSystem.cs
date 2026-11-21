@@ -40,6 +40,30 @@ public sealed class ToolConsole
 		return $"Contents has been written successfully to: {path}";
 	}
 
+    /// <summary>
+    /// Write base64 contents as binary data to a file at a given path.
+    /// </summary>
+    /// <param name="path">[Required] The path of the file to write to.</param>
+    /// <param name="contents">The base64 content to write to the file.</param>
+	[McpServerTool, Description("Write base64 contents as binary data to a file at a given path.")]
+    //[OllamaTool]
+    public static string FileWriteBase64([Required] string path, string base64Contents)
+    {
+        if (string.IsNullOrWhiteSpace(path))
+        {
+            throw new ArgumentException("path not provided, but is required parameter", nameof(path));
+        }
+
+        var parentDirectory = Path.GetDirectoryName(path);
+        if (!string.IsNullOrWhiteSpace(parentDirectory))
+        {
+            EnsureDirectoryExists(parentDirectory);
+        }
+
+        System.IO.File.WriteAllBytes(path, Convert.FromBase64String(base64Contents));
+        return $"Contents has been written successfully to: {path}";
+    }
+
 	/// <summary>
 	/// Delete a file at a given path.
 	/// </summary>
@@ -59,13 +83,22 @@ public sealed class ToolConsole
 	}
 
 	/// <summary>
-	/// Read file contents from a given path.
+	/// Read text file contents from a given path.
 	/// </summary>
 	/// <param name="path">The path of the file to read.</param>
 	/// <returns>The contents of the file.</returns>
 	//[OllamaTool]
 	[McpServerTool, Description("Read file contents from a given path.")]	
 	public static string FileRead(string path) => System.IO.File.ReadAllText(path);
+
+	/// <summary>
+	/// Read binary or image file contents as base64 from a given path.
+	/// </summary>
+	/// <param name="path">The path of the file to read.</param>
+	/// <returns>The contents of the file in base64 format.</returns>
+	//[OllamaTool]
+	[McpServerTool, Description("Read binary or image file contents as base64 from a given path.")]
+	public static string FileReadBase64(string path) => Convert.ToBase64String(System.IO.File.ReadAllBytes(path));
 
 	/// <summary>
 	/// Checks if a file exists at a given path.
