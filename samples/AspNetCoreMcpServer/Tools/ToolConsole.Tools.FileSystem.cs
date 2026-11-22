@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
+using System.Reflection;
 using System.Text;
 using System;
 using Microsoft.Extensions.AI;
@@ -16,6 +17,21 @@ namespace AspNetCoreMcpServer.Tools;
 public sealed class ToolConsole
 {
 	public static object commandLock = new object();
+
+	/// <summary>
+	/// Gets version of MCP server.
+	/// </summary>
+	//[OllamaTool]
+	[McpServerTool, Description("Gets version of MCP server")]
+	public static string McpVersion()
+	{
+		var assembly = Assembly.GetExecutingAssembly();
+		var version = assembly.GetName().Version?.ToString();
+		var informationalVersion = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
+
+		return $"{{ \"AssemblyVersion\": \"{version}\", \"AssemblyInformationalVersion\": \"{informationalVersion}\" }}";
+	}
+
 	/// <summary>
 	/// Write contents to a file at a given path.
 	/// </summary>
